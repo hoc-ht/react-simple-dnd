@@ -1,0 +1,61 @@
+{
+  "name": "@hoc-ht/simple-drag-drop",
+  "version": "0.1.0",
+  "private": false,
+  "author": "Hoang Thai Hoc (https://github.com/hoc-ht)",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoc-ht/simple-drag-drop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hoc-ht/simple-drag-drop/issues"
+  },
+  "homepage": "https://github.com/hoc-ht/simple-drag-drop",
+  "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "css-box-model": "~1.2.1",
+    "prop-types": "~15.7.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "rm -rf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files --ignore __tests__,spec.js,test.js,__snapshots__",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/cli": "7.12.10",
+    "@babel/core": "7.12.10",
+    "@babel/preset-react": "7.12.10",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "3.4.1"
+  },
+  "peerDependencies": {
+    "react": ">=16.3.0"
+  },
+  "description": "A simple ReactJS drag & drop library.",
+  "license": "MIT"
+}

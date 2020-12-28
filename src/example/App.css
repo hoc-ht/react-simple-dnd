@@ -1,0 +1,42 @@
+.image-list {
+    display: block;
+    margin-bottom: 20px;
+    min-height: 66px;
+    background: #f0f0f0;
+}
+
+.image-list-small {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.image-list-fixed-width {
+    width: 300px;
+    max-width: 300px;
+}
+
+.image-list.dragging-over {
+    background: #00cccc;
+}
+
+.image-item {
+    display: inline-block;
+    margin: 0 2px;
+    cursor: grabbing;
+}
+
+.image-item img {
+    height: 150px;
+    width: auto;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.image-list-small .image-item img {
+    height: 66px;
+    width: auto;
+}
+
+.image-list-container {
+    display: flex;
+}
