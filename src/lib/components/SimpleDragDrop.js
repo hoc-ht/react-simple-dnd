@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {getBox} from 'css-box-model';
 import reducer, {initialState} from '../reducer/reducer';
 import {SimpleDragDropContext} from '../context';
 import {onDragEndAC, onDragStartAC, onMovingAC} from '../reducer/actions';
 import {throttle} from '../utils';
-import {handleDragEnd} from '../reducer/utils';
+import {getDragStartData, handleDragEnd} from '../reducer/utils';
 
 const useSimpleDragDrop = ({fixedItemHeight, onDragEnd}) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
@@ -72,56 +71,8 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd}) => {
       console.error(new Error('Draggable ref with id ' + draggableId + ' not found'));
       return;
     }
-    const droppableItems = {}, draggableItems = {};
-    Object.keys(droppableRefs.current).forEach(id => {
-      const innerRef = droppableRefs.current[id]?.innerRef?.current;
-      if (innerRef) {
-        const box = getBox(innerRef);
-        droppableItems[id] = {
-          droppableId: droppableRefs.current[id].droppableId,
-          borderBox: box.borderBox,
-          config: droppableRefs.current[id].config,
-        };
-      }
-    });
-    Object.keys(draggableRefs.current).forEach(id => {
-      const innerRef = draggableRefs.current[id]?.innerRef?.current;
-      if (innerRef) {
-        const box = getBox(innerRef);
-        draggableItems[id] = {
-          draggableId: id,
-          droppableId: draggableRefs.current[id].droppableId,
-          index: draggableRefs.current[id].index,
-          borderBox: box.borderBox,
-        };
-      }
-    });
-    const box = getBox(draggableRef);
-    draggableItems[draggableId] = {
-      ...draggableItems[draggableId],
-      style: {
-        position: 'fixed',
-        left: box.borderBox.left,
-        top: box.borderBox.top,
-        pointerEvents: 'none',
-      },
-    };
-    if (fixedItemHeight) {
-      const fixedItemWidth = box.borderBox.width * fixedItemHeight / box.borderBox.height;
-      draggableItems[draggableId].fixedHeight = fixedItemHeight;
-      draggableItems[draggableId].fixedWidth = fixedItemWidth;
-      draggableItems[draggableId].style.height = fixedItemHeight;
-      draggableItems[draggableId].style.width = fixedItemWidth;
-    }
-    dispatch(onDragStartAC({
-      draggingItem: {
-        draggableId,
-        droppableId: draggableRefs.current[draggableId]?.droppableId,
-        index: draggableRefs.current[draggableId]?.index,
-      },
-      droppableItems,
-      draggableItems,
-    }));
+    const data = getDragStartData(draggableId, event, {fixedItemHeight, droppableRefs, draggableRefs});
+    dispatch(onDragStartAC(data));
 
     // Listen mouse up event
     document.addEventListener('mouseup', handleMouseUpRef.current);

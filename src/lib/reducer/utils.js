@@ -1,3 +1,5 @@
+import {getBox} from 'css-box-model';
+
 export function handleMove(mousePosition, state) {
   const {draggableItems, droppableItems, draggingItem} = state;
   if (!draggingItem || !draggableItems[draggingItem?.draggableId]) {
@@ -78,35 +80,29 @@ function calculateDraggableItemsData(draggableItems, draggingItem, droppableItem
 
 function calculateDraggingItemStyle(draggableItem, mousePosition) {
   const {x, y} = mousePosition;
-  const {borderBox, fixedWidth, fixedHeight} = draggableItem;
-  const width = fixedWidth ? fixedWidth : borderBox.width;
-  const height = fixedHeight ? fixedHeight : borderBox.height;
-  const offsetLeft = x - borderBox.left - Math.floor(width / 2);
-  const offsetTop = y - borderBox.top - Math.floor(height / 5);
-  const style = {
+  const {borderBox, width, height, offsetLeft, offsetTop} = draggableItem;
+  const translateX = x - borderBox.left - offsetLeft;
+  const translateY = y - borderBox.top - offsetTop;
+  return {
+    width,
+    height,
     position: 'fixed',
     left: borderBox.left,
     top: borderBox.top,
     zIndex: 1500,
     pointerEvents: 'none',
-    transform: `translate(${offsetLeft}px, ${offsetTop}px)`,
+    transform: `translate(${translateX}px, ${translateY}px)`,
     transition: 'transform 0.3s cubic-bezier(.2,1,.1,1), opacity 0.3s cubic-bezier(.2,1,.1,1)',
   };
-  if (fixedWidth) {
-    style.width = fixedWidth;
-    style.height = fixedHeight;
-  }
-  return style;
 }
 
 function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem) {
   const {x} = mousePosition;
-  const {fixedWidth} = draggingItem;
+  const {width: draggingItemWidth} = draggingItem;
   const borderBox = draggableItem.borderBox;
   if (x < (borderBox.left + borderBox.width / 2)) {
-    const offsetLeft = fixedWidth ? fixedWidth : draggingItem.borderBox.width;
     const style = {
-      transform: `translate(${offsetLeft}px, 0)`,
+      transform: `translate(${draggingItemWidth}px, 0)`,
       transition: 'transform 0.3s cubic-bezier(.2,1,.1,1), opacity 0.3s cubic-bezier(.2,1,.1,1)',
     };
     if (!draggingItem?.style) {
@@ -123,6 +119,77 @@ function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem)
       }
     }
   }
+}
+
+export function getDragStartData(draggableId, event, {fixedItemHeight, droppableRefs, draggableRefs}) {
+  const droppableItems = {}, draggableItems = {};
+  const draggableItem = draggableRefs.current[draggableId];
+  Object.keys(droppableRefs.current).forEach(id => {
+    const innerRef = droppableRefs.current[id]?.innerRef?.current;
+    if (innerRef) {
+      const box = getBox(innerRef);
+      droppableItems[id] = {
+        droppableId: droppableRefs.current[id].droppableId,
+        borderBox: box.borderBox,
+        config: droppableRefs.current[id].config,
+      };
+    }
+  });
+  Object.keys(draggableRefs.current).forEach(id => {
+    const innerRef = draggableRefs.current[id]?.innerRef?.current;
+    if (innerRef) {
+      const box = getBox(innerRef);
+      draggableItems[id] = {
+        draggableId: id,
+        droppableId: draggableRefs.current[id].droppableId,
+        index: draggableRefs.current[id].index,
+        borderBox: box.borderBox,
+      };
+    }
+  });
+  const box = getBox(draggableItem?.innerRef?.current);
+  let width = box.borderBox.width;
+  let height = box.borderBox.height;
+  let offsetLeft = event.clientX - box.borderBox.left;
+  let offsetTop = event.clientY - box.borderBox.top;
+
+  if (fixedItemHeight) {
+    height = fixedItemHeight;
+    width = box.borderBox.width * height / box.borderBox.height;
+    offsetLeft = width * offsetLeft / box.borderBox.width;
+    offsetTop = height * offsetTop / box.borderBox.height;
+  }
+
+  const translateX = event.clientX - box.borderBox.left - offsetLeft;
+  const translateY = event.clientY - box.borderBox.top - offsetTop;
+
+  draggableItems[draggableId] = {
+    ...draggableItems[draggableId],
+    width,
+    height,
+    offsetLeft,
+    offsetTop,
+    style: {
+      width,
+      height,
+      position: 'fixed',
+      left: box.borderBox.left,
+      top: box.borderBox.top,
+      zIndex: 1500,
+      pointerEvents: 'none',
+      transform: `translate(${translateX}px, ${translateY}px)`,
+    },
+  };
+
+  return {
+    draggingItem: {
+      draggableId,
+      droppableId: draggableItem?.droppableId,
+      index: draggableItem?.index,
+    },
+    droppableItems,
+    draggableItems,
+  };
 }
 
 export function handleDragEnd(mousePosition, state) {
