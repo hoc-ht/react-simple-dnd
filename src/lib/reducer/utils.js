@@ -96,7 +96,7 @@ function calculateDraggingItemStyle(draggableItem, mousePosition) {
   };
 }
 
-function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem) {
+function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem, animate = true) {
   const {x} = mousePosition;
   const {width: draggingItemWidth} = draggingItem;
   const borderBox = draggableItem.borderBox;
@@ -105,7 +105,7 @@ function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem)
       transform: `translate(${draggingItemWidth}px, 0)`,
       transition: 'transform 0.3s cubic-bezier(.2,1,.1,1), opacity 0.3s cubic-bezier(.2,1,.1,1)',
     };
-    if (!draggingItem?.style) {
+    if (!animate) {
       delete style.transition;
     }
     return style;
@@ -124,6 +124,7 @@ function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem)
 export function getDragStartData(draggableId, event, {fixedItemHeight, droppableRefs, draggableRefs}) {
   const droppableItems = {}, draggableItems = {};
   const draggableItem = draggableRefs.current[draggableId];
+  const droppableItem = droppableRefs.current[draggableRefs.current[draggableId].droppableId];
   Object.keys(droppableRefs.current).forEach(id => {
     const innerRef = droppableRefs.current[id]?.innerRef?.current;
     if (innerRef) {
@@ -180,6 +181,19 @@ export function getDragStartData(draggableId, event, {fixedItemHeight, droppable
       transform: `translate(${translateX}px, ${translateY}px)`,
     },
   };
+
+  if (!droppableItem?.config?.copyMode) {
+    Object.values(draggableItems).forEach(item => {
+      if (item.droppableId === draggableItem.droppableId
+        && item.draggableId !== draggableItem.draggableId) {
+        const style = calculateDraggableItemStyle(draggableItems[item.draggableId], {x: event.clientX}, draggableItems[draggableItem.draggableId], false);
+        draggableItems[item.draggableId] = {
+          ...draggableItems[item.draggableId],
+          style,
+        };
+      }
+    });
+  }
 
   return {
     draggingItem: {

@@ -6,7 +6,7 @@ class ImageList extends React.PureComponent {
   render() {
     const {images, droppableId, className, copyMode, isDropDisabled} = this.props;
     return (
-      <Droppable droppableId={droppableId} isDropDisabled={isDropDisabled}>
+      <Droppable droppableId={droppableId} isDropDisabled={isDropDisabled} copyMode={copyMode}>
         {
           (provided, snapshot) => {
             return (
