@@ -4,9 +4,9 @@ import ImageItem from './ImageItem';
 
 class ImageList extends React.PureComponent {
   render() {
-    const {images, droppableId, className, copyMode, isDropDisabled, fixedGap} = this.props;
+    const {images, droppableId, className, isDropDisabled, fixedGap} = this.props;
     return (
-      <Droppable droppableId={droppableId} isDropDisabled={isDropDisabled} copyMode={copyMode} fixedGap={fixedGap}>
+      <Droppable droppableId={droppableId} isDropDisabled={isDropDisabled} fixedGap={fixedGap}>
         {
           (provided, snapshot) => {
             return (
@@ -22,7 +22,7 @@ class ImageList extends React.PureComponent {
                       itemIndex={index}
                       droppableId={droppableId}
                       key={`${droppableId}.${item.id}`}
-                      copyMode={copyMode}
+                      isDropDisabled={isDropDisabled}
                     />
                   ))
                 }

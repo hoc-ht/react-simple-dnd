@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {DroppableContext, useSimpleDragDropContext} from '../context';
 
-const Droppable = React.memo(function Droppable({children, droppableId, copyMode, isDropDisabled, fixedGap}) {
+const Droppable = React.memo(function Droppable({children, droppableId, isDropDisabled, fixedGap}) {
   const {registerDroppableItem, unregisterDroppableItem, droppableItems} = useSimpleDragDropContext();
   const innerRef = React.useRef();
   const configRef = React.useRef({});
-  configRef.current = {copyMode, isDropDisabled, fixedGap};
+  configRef.current = {isDropDisabled, fixedGap};
   const droppableItem = droppableItems[droppableId];
 
   React.useEffect(() => {
@@ -38,13 +38,11 @@ const Droppable = React.memo(function Droppable({children, droppableId, copyMode
 
 Droppable.propTypes = {
   droppableId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  copyMode: PropTypes.bool,
   isDropDisabled: PropTypes.bool,
   fixedGap: PropTypes.number,
 };
 
 Droppable.defaultProps = {
-  copyMode: false,
   isDropDisabled: false,
 };
 

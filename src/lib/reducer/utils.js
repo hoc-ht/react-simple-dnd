@@ -101,7 +101,6 @@ function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem,
   const {width: draggingItemWidth} = draggingItem;
   const borderBox = draggableItem.borderBox;
   const translateX = (gap || 0) + draggingItemWidth;
-  console.log(gap);
   if (x < (borderBox.left + borderBox.width / 2)) {
     const style = {
       transform: `translate(${translateX}px, 0)`,
@@ -184,7 +183,7 @@ export function getDragStartData(draggableId, event, {fixedItemHeight, droppable
     },
   };
 
-  if (!droppableItem?.config?.copyMode) {
+  if (!droppableItem?.config?.isDropDisabled) {
     Object.values(draggableItems).forEach(item => {
       if (item.droppableId === draggableItem.droppableId
         && item.draggableId !== draggableItem.draggableId) {

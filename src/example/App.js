@@ -54,7 +54,7 @@ class App extends React.PureComponent {
     return (
       <SimpleDragDrop fixedItemHeight={66} onDragEnd={this.onDragEnd}>
         <div className="App">
-          <ImageList images={list1} droppableId="list1" className="image-list" copyMode={true} isDropDisabled={true}/>
+          <ImageList images={list1} droppableId="list1" className="image-list" isDropDisabled={true}/>
           <div className="image-list-container">
             <ImageList images={list2} droppableId="list2" className="image-list image-list-small image-list-fixed-width" fixedGap={8}/>
             <ImageList images={list3} droppableId="list3" className="image-list image-list-small image-list-fixed-width" fixedGap={8}/>

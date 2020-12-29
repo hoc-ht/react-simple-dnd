@@ -108,10 +108,8 @@ const SimpleDragDrop = React.memo(function SimpleDragDrop(props) {
   const {handleMouseMove} = simpleDragDrop;
 
   React.useEffect(() => {
-    console.log('Mount');
     window.addEventListener('mousemove', handleMouseMove);
     return () => {
-      console.log('Unmount');
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, [handleMouseMove]);
