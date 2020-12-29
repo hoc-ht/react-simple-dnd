@@ -105,6 +105,7 @@ function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem,
     const style = {
       transform: `translate(${translateX}px, 0)`,
       transition: 'transform 0.3s cubic-bezier(.2,1,.1,1), opacity 0.3s cubic-bezier(.2,1,.1,1)',
+      pointerEvents: 'none',
     };
     if (!animate) {
       delete style.transition;
@@ -116,6 +117,7 @@ function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem,
         return {
           transform: `translate(0, 0)`,
           transition: 'transform 0.3s cubic-bezier(.2,1,.1,1), opacity 0.3s cubic-bezier(.2,1,.1,1)',
+          pointerEvents: 'none',
         };
       }
     }
