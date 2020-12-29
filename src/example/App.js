@@ -56,8 +56,8 @@ class App extends React.PureComponent {
         <div className="App">
           <ImageList images={list1} droppableId="list1" className="image-list" copyMode={true} isDropDisabled={true}/>
           <div className="image-list-container">
-            <ImageList images={list2} droppableId="list2" className="image-list image-list-small image-list-fixed-width"/>
-            <ImageList images={list3} droppableId="list3" className="image-list image-list-small"/>
+            <ImageList images={list2} droppableId="list2" className="image-list image-list-small image-list-fixed-width" fixedGap={8}/>
+            <ImageList images={list3} droppableId="list3" className="image-list image-list-small image-list-fixed-width" fixedGap={8}/>
           </div>
         </div>
       </SimpleDragDrop>

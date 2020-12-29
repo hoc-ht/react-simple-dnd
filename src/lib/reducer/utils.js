@@ -67,7 +67,7 @@ function calculateDraggableItemsData(draggableItems, draggingItem, droppableItem
     if (draggableItem.droppableId === droppableItem?.droppableId) {
       newItems[draggableItem.draggableId] = {
         ...newItems[draggableItem.draggableId],
-        style: calculateDraggableItemStyle(newItems[draggableItem.draggableId], mousePosition, newItems[draggingId]),
+        style: calculateDraggableItemStyle(newItems[draggableItem.draggableId], mousePosition, newItems[draggingId], droppableItem?.config?.fixedGap, true),
       };
       isChanged = true;
     }
@@ -96,13 +96,15 @@ function calculateDraggingItemStyle(draggableItem, mousePosition) {
   };
 }
 
-function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem, animate = true) {
+function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem, gap = 0, animate = true) {
   const {x} = mousePosition;
   const {width: draggingItemWidth} = draggingItem;
   const borderBox = draggableItem.borderBox;
+  const translateX = (gap || 0) + draggingItemWidth;
+  console.log(gap);
   if (x < (borderBox.left + borderBox.width / 2)) {
     const style = {
-      transform: `translate(${draggingItemWidth}px, 0)`,
+      transform: `translate(${translateX}px, 0)`,
       transition: 'transform 0.3s cubic-bezier(.2,1,.1,1), opacity 0.3s cubic-bezier(.2,1,.1,1)',
     };
     if (!animate) {
@@ -186,7 +188,7 @@ export function getDragStartData(draggableId, event, {fixedItemHeight, droppable
     Object.values(draggableItems).forEach(item => {
       if (item.droppableId === draggableItem.droppableId
         && item.draggableId !== draggableItem.draggableId) {
-        const style = calculateDraggableItemStyle(draggableItems[item.draggableId], {x: event.clientX}, draggableItems[draggableItem.draggableId], false);
+        const style = calculateDraggableItemStyle(draggableItems[item.draggableId], {x: event.clientX}, draggableItems[draggableItem.draggableId], droppableItem?.config?.fixedGap, false);
         draggableItems[item.draggableId] = {
           ...draggableItems[item.draggableId],
           style,
