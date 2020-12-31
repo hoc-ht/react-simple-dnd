@@ -92,7 +92,7 @@ function calculateDraggingItemStyle(draggableItem, mousePosition) {
     zIndex: 1500,
     pointerEvents: 'none',
     transform: `translate(${translateX}px, ${translateY}px)`,
-    transition: 'transform 0.3s cubic-bezier(.2,1,.1,1), opacity 0.3s cubic-bezier(.2,1,.1,1)',
+    transition: 'transform 0.15s cubic-bezier(.2,1,.1,1)',
   };
 }
 
@@ -104,7 +104,7 @@ function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem,
   if (x < (borderBox.left + borderBox.width / 2)) {
     const style = {
       transform: `translate(${translateX}px, 0)`,
-      transition: 'transform 0.3s cubic-bezier(.2,1,.1,1), opacity 0.3s cubic-bezier(.2,1,.1,1)',
+      transition: 'transform 0.35s cubic-bezier(.2,1,.1,1)',
       pointerEvents: 'none',
     };
     if (!animate) {
@@ -116,7 +116,7 @@ function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem,
       if (draggableItem.style.transform !== `translate(0, 0)`) {
         return {
           transform: `translate(0, 0)`,
-          transition: 'transform 0.3s cubic-bezier(.2,1,.1,1), opacity 0.3s cubic-bezier(.2,1,.1,1)',
+          transition: 'transform 0.35s cubic-bezier(.2,1,.1,1)',
           pointerEvents: 'none',
         };
       }

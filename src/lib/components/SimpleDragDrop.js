@@ -13,7 +13,6 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd}) => {
   const droppableRefs = React.useRef({});
   const draggableRefs = React.useRef({});
   const mousePosRef = React.useRef({});
-  const handleMouseUpRef = React.useRef(null);
 
   const registerDroppableItem = React.useCallback(function (droppableId, innerRef, config) {
     droppableRefs.current[droppableId] = {
@@ -40,8 +39,35 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd}) => {
     delete draggableRefs.current[draggableId];
   }, []);
 
-  handleMouseUpRef.current = React.useCallback(function (event) {
-    if (!stateRef.current.draggingItem) {
+  const handleDragStart = React.useCallback((draggableId, event) => {
+    event.preventDefault();
+    if (stateRef.current.isDragging) {
+      return;
+    }
+    const draggableRef = draggableRefs.current[draggableId]?.innerRef?.current;
+    if (!draggableRef) {
+      console.error(new Error('Draggable ref with id ' + draggableId + ' not found'));
+      return;
+    }
+    const data = getDragStartData(draggableId, event, {fixedItemHeight, droppableRefs, draggableRefs});
+    dispatch(onDragStartAC(data));
+  }, [fixedItemHeight]);
+
+  const handleMouseMove = React.useCallback(throttle(function (event) {
+    const {isDragging} = stateRef.current;
+    if (!isDragging) {
+      return;
+    }
+    const mousePos = {
+      x: event.clientX,
+      y: event.clientY,
+    };
+    mousePosRef.current = mousePos;
+    dispatch(onMovingAC(mousePos));
+  }, 15, {leading: true, trailing: true}), []);
+
+  const handleMouseUp = React.useCallback(function (event) {
+    if (!stateRef.current.isDragging) {
       return;
     }
     event.preventDefault();
@@ -62,40 +88,11 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd}) => {
     }
   }, [onDragEnd]);
 
-  const handleDragStart = React.useCallback((draggableId, event) => {
-    event.preventDefault();
-    if (stateRef.current.isDragging) {
-      return;
-    }
-    const draggableRef = draggableRefs.current[draggableId]?.innerRef?.current;
-    if (!draggableRef) {
-      console.error(new Error('Draggable ref with id ' + draggableId + ' not found'));
-      return;
-    }
-    const data = getDragStartData(draggableId, event, {fixedItemHeight, droppableRefs, draggableRefs});
-    dispatch(onDragStartAC(data));
-
-    // Listen mouse up event
-    document.addEventListener('mouseup', handleMouseUpRef.current);
-  }, [fixedItemHeight]);
-
-  const handleMouseMove = React.useCallback(throttle(function (event) {
-    const {isDragging} = stateRef.current;
-    if (!isDragging) {
-      return;
-    }
-    const mousePos = {
-      x: event.clientX,
-      y: event.clientY,
-    };
-    mousePosRef.current = mousePos;
-    dispatch(onMovingAC(mousePos));
-  }, 30, {leading: true, trailing: true}), []);
-
   return {
     ...state,
     handleDragStart,
     handleMouseMove,
+    handleMouseUp,
     registerDroppableItem,
     registerDraggableItem,
     unregisterDroppableItem,
@@ -106,12 +103,14 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd}) => {
 const SimpleDragDrop = React.memo(function SimpleDragDrop(props) {
   const {children, ...rest} = props;
   const simpleDragDrop = useSimpleDragDrop(rest);
-  const {handleMouseMove} = simpleDragDrop;
+  const {handleMouseMove, handleMouseUp} = simpleDragDrop;
 
   React.useEffect(() => {
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
     };
   }, [handleMouseMove]);
 
