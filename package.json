@@ -1,5 +1,5 @@
 {
-  "name": "@hoc-ht/simple-drag-drop",
+  "name": "@hoc-ht/react-simple-dnd",
   "version": "0.1.0",
   "private": false,
   "author": "Hoang Thai Hoc (https://github.com/hoc-ht)",
@@ -11,12 +11,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hoc-ht/simple-drag-drop.git"
+    "url": "git+https://github.com/hoc-ht/react-simple-dnd.git"
   },
   "bugs": {
-    "url": "https://github.com/hoc-ht/simple-drag-drop/issues"
+    "url": "https://github.com/hoc-ht/react-simple-dnd/issues"
   },
-  "homepage": "https://github.com/hoc-ht/simple-drag-drop",
+  "homepage": "https://github.com/hoc-ht/react-simple-dnd",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",

@@ -5,7 +5,7 @@ A simple ReactJS drag & drop library.
 ## Installation
 
 Run the following command:
-`npm install @hoc-ht/simple-drag-drop`
+`npm install @hoc-ht/react-simple-dnd`
 
 ## Authors
 
