@@ -53,6 +53,7 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd}) => {
       onDragEnd({
         source: {
           droppableId: draggingItem.droppableId,
+          config: droppableRefs.current[draggingItem.droppableId].config,
           index: draggingItem.index,
         },
         draggableId: draggingItem.draggableId,

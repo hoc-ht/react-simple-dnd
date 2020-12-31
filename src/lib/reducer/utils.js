@@ -259,6 +259,7 @@ function calculateDestination(droppableItem, draggableItems, draggingItem, mouse
   });
   return {
     droppableId: droppableItem.droppableId,
+    config: droppableItem.config,
     index: left.length,
   };
 }

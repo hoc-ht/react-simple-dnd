@@ -4,9 +4,9 @@ import ImageItem from './ImageItem';
 
 class ImageList extends React.PureComponent {
   render() {
-    const {images, droppableId, className, isDropDisabled, fixedGap} = this.props;
+    const {images, droppableId, className, isDropDisabled, fixedGap, copyMode} = this.props;
     return (
-      <Droppable droppableId={droppableId} isDropDisabled={isDropDisabled} fixedGap={fixedGap}>
+      <Droppable droppableId={droppableId} isDropDisabled={isDropDisabled} fixedGap={fixedGap} copyMode={copyMode}>
         {
           (provided, snapshot) => {
             return (

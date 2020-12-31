@@ -24,28 +24,47 @@ class App extends React.PureComponent {
     ],
   };
 
+  getRealId = (draggableId) => {
+    return draggableId.split('.')[0] * 1;
+  };
+
   onDragEnd = (event) => {
-    const {source, destination} = event;
+    const {source, destination, draggableId} = event;
     if (destination?.droppableId === source.droppableId && destination.index === source.index) {
       return;
     }
-    if (!destination) {
+    if (!destination || destination.config.isDropDisabled) {
       return;
     }
     this.setState(prevState => {
-      let srcItems = [...prevState[source.droppableId]];
-      let dstItems = [...prevState[destination.droppableId]];
-      const draggableItem = srcItems[source.index];
-      if (source.droppableId !== 'list1') {
-        srcItems.splice(source.index, 1);
+      if (source.droppableId !== destination.droppableId) {
+        let srcItems = [...prevState[source.droppableId]];
+        let dstItems = [...prevState[destination.droppableId]];
+        const id = this.getRealId(draggableId);
+        const existedItem = dstItems.find(item => item.id === id);
+        if (existedItem) {
+          return null;
+        }
+        const draggableItem = srcItems[source.index];
+        if (source.config.copyMode) {
+          srcItems = prevState[source.droppableId];
+        } else {
+          srcItems.splice(source.index, 1);
+        }
+        dstItems.splice(destination.index, 0, draggableItem);
+        return {
+          [source.droppableId]: srcItems,
+          [destination.droppableId]: dstItems,
+        };
       } else {
-        srcItems = prevState.list1;
+        const items = [...prevState[source.droppableId]];
+        const draggableItem = items[source.index];
+        items.splice(source.index, 1);
+        items.splice(destination.index, 0, draggableItem);
+        return {
+          [source.droppableId]: items,
+        };
       }
-      dstItems.splice(destination.index, 0, draggableItem);
-      return {
-        [source.droppableId]: srcItems,
-        [destination.droppableId]: dstItems,
-      };
     });
   };
 
@@ -54,10 +73,10 @@ class App extends React.PureComponent {
     return (
       <SimpleDragDrop fixedItemHeight={66} onDragEnd={this.onDragEnd}>
         <div className="App">
-          <ImageList images={list1} droppableId="list1" className="image-list" isDropDisabled={true}/>
+          <ImageList images={list1} droppableId="list1" className="image-list" isDropDisabled={true} copyMode={true}/>
           <div className="image-list-container">
             <ImageList images={list2} droppableId="list2" className="image-list image-list-small image-list-fixed-width" fixedGap={8}/>
-            <ImageList images={list3} droppableId="list3" className="image-list image-list-small image-list-fixed-width" fixedGap={8}/>
+            <ImageList images={list3} droppableId="list3" className="image-list image-list-small image-list-fixed-width" fixedGap={8} copyMode={true}/>
           </div>
         </div>
       </SimpleDragDrop>
