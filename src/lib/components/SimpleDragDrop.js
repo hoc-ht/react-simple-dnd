@@ -64,7 +64,7 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd}) => {
     };
     mousePosRef.current = mousePos;
     dispatch(onMovingAC(mousePos));
-  }, 15, {leading: true, trailing: true}), []);
+  }, 30, {leading: true, trailing: true}), []);
 
   const handleMouseUp = React.useCallback(function (event) {
     if (!stateRef.current.isDragging) {
