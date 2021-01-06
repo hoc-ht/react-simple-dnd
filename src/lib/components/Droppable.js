@@ -29,6 +29,10 @@ const Droppable = React.memo(function Droppable({children, droppableId, ...rest}
   const snapshot = {
     isDraggingOver: !!droppableItem?.isDraggingOver,
   };
+  if (snapshot.isDraggingOver) {
+    snapshot.validationResult = droppableItem?.validationResult;
+    snapshot.canDropped = droppableItem?.canDropped;
+  }
   return (
     <DroppableContext.Provider value={{droppableId}}>
       {children(provided, snapshot)}
@@ -41,6 +45,7 @@ Droppable.propTypes = {
   isDropDisabled: PropTypes.bool,
   copyMode: PropTypes.bool,
   fixedGap: PropTypes.number,
+  validation: PropTypes.func, // validation function, must return false or throw an error to disable drop
 };
 
 Droppable.defaultProps = {

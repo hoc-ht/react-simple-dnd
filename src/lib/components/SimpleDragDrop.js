@@ -41,17 +41,25 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd, onDragStart}) => {
 
   const handleDragStart = React.useCallback((draggableId, event) => {
     event.preventDefault();
+
     if (stateRef.current.isDragging) {
       return;
     }
+
     const draggingItem = draggableRefs.current[draggableId];
     const draggableRef = draggingItem?.innerRef?.current;
     if (!draggableRef) {
-      console.error(new Error('Draggable ref with id ' + draggableId + ' not found'));
-      return;
+      throw new Error('Draggable ref with id ' + draggableId + ' not found');
     }
-    const data = getDragStartData(draggableId, event, {fixedItemHeight, droppableRefs, draggableRefs});
+
+    const droppableItem = droppableRefs.current[draggingItem.droppableId];
+    if (!droppableItem) {
+      throw new Error('Droppable with id ' + draggingItem.droppableId + ' not found');
+    }
+
+    const data = getDragStartData(draggingItem, event, {fixedItemHeight, droppableRefs, draggableRefs});
     dispatch(onDragStartAC(data));
+
     if (onDragStart) {
       onDragStart({
         source: {

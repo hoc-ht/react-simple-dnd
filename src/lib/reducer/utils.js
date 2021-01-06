@@ -6,8 +6,8 @@ export function handleMove(mousePosition, state) {
     return state;
   }
   const newDroppableItems = calculateDroppableData(droppableItems, mousePosition);
-  const droppableItem = Object.values(newDroppableItems).find(item => item.isDraggingOver);
-  const newDraggableItems = calculateDraggableItemsData(draggableItems, draggingItem, droppableItem, mousePosition);
+  const droppingItem = Object.values(newDroppableItems).find(item => item.isDraggingOver);
+  const newDraggableItems = calculateDraggableItemsData(draggableItems, draggingItem, droppingItem, mousePosition);
   return {
     ...state,
     draggableItems: newDraggableItems,
@@ -37,14 +37,14 @@ function calculateDroppableData(droppableItems, mousePosition) {
   return newItems;
 }
 
-function calculateDraggableItemsData(draggableItems, draggingItem, droppableItem, mousePosition) {
+function calculateDraggableItemsData(draggableItems, draggingItem, droppingItem, mousePosition) {
   const newItems = {...draggableItems};
   const {draggableId: draggingId} = draggingItem;
   let isChanged = false;
   Object.values(newItems).forEach(draggableItem => {
     // If this item is not dragging item
-    // AND (this item is not in list which can be drop OR droppableItem is disabled)
-    if (draggableItem.draggableId !== draggingId && (draggableItem.droppableId !== droppableItem?.droppableId || droppableItem?.config?.isDropDisabled)) {
+    // AND (this item is not in list which is dropping over or cannot be dropped)
+    if (draggableItem.draggableId !== draggingId && (draggableItem.droppableId !== droppingItem?.droppableId || !droppingItem?.canDropped)) {
       if (draggableItem.style) {
         newItems[draggableItem.draggableId] = {
           ...newItems[draggableItem.draggableId],
@@ -63,11 +63,11 @@ function calculateDraggableItemsData(draggableItems, draggingItem, droppableItem
       isChanged = true;
       return;
     }
-    // If this item is in list which can be drop and droppableItem can be drop => calculate position
-    if (draggableItem.droppableId === droppableItem?.droppableId) {
+    // If this item is in list which is dropping over and can be dropped => calculate position
+    if (draggableItem.droppableId === droppingItem?.droppableId) {
       newItems[draggableItem.draggableId] = {
         ...newItems[draggableItem.draggableId],
-        style: calculateDraggableItemStyle(newItems[draggableItem.draggableId], mousePosition, newItems[draggingId], droppableItem?.config?.fixedGap, true),
+        style: calculateDraggableItemStyle(newItems[draggableItem.draggableId], mousePosition, newItems[draggingId], droppingItem?.config?.fixedGap, true),
       };
       isChanged = true;
     }
@@ -124,20 +124,37 @@ function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem,
   }
 }
 
-export function getDragStartData(draggableId, event, {fixedItemHeight, droppableRefs, draggableRefs}) {
+export function getDragStartData(draggingItem, event, {fixedItemHeight, droppableRefs, draggableRefs}) {
   const droppableItems = {}, draggableItems = {};
-  const draggableItem = draggableRefs.current[draggableId];
-  const droppableItem = droppableRefs.current[draggableRefs.current[draggableId].droppableId];
+  const {draggableId} = draggingItem;
+  const droppableId = draggingItem.droppableId;
   Object.keys(droppableRefs.current).forEach(id => {
-    const innerRef = droppableRefs.current[id]?.innerRef?.current;
-    if (innerRef) {
-      const box = getBox(innerRef);
-      droppableItems[id] = {
-        droppableId: droppableRefs.current[id].droppableId,
-        borderBox: box.borderBox,
-        config: droppableRefs.current[id].config,
-      };
+    let validationResult;
+    const droppable = droppableRefs.current[id];
+    const innerRef = droppable?.innerRef?.current;
+    if (!innerRef) {
+      throw new Error(`Droppable ref with id ${id} not found.`);
     }
+    const box = getBox(innerRef);
+    if (droppable.config?.validation) {
+      try {
+        validationResult = droppable.config.validation({
+          draggableId,
+          source: {
+            droppableId: draggingItem.droppableId,
+          },
+        }) !== false;
+      } catch (error) {
+        validationResult = false;
+      }
+    }
+    droppableItems[id] = {
+      droppableId: droppableRefs.current[id].droppableId,
+      borderBox: box.borderBox,
+      config: droppableRefs.current[id].config,
+      validationResult: validationResult,
+      canDropped: validationResult !== false && !droppable.config?.isDropDisabled,
+    };
   });
   Object.keys(draggableRefs.current).forEach(id => {
     const innerRef = draggableRefs.current[id]?.innerRef?.current;
@@ -151,7 +168,7 @@ export function getDragStartData(draggableId, event, {fixedItemHeight, droppable
       };
     }
   });
-  const box = getBox(draggableItem?.innerRef?.current);
+  const box = getBox(draggingItem.innerRef.current);
   let width = box.borderBox.width;
   let height = box.borderBox.height;
   let offsetLeft = event.clientX - box.borderBox.left;
@@ -185,11 +202,12 @@ export function getDragStartData(draggableId, event, {fixedItemHeight, droppable
     },
   };
 
-  if (!droppableItem?.config?.isDropDisabled) {
+  const droppableItem = droppableItems[droppableId];
+  if (droppableItem.canDropped) {
     Object.values(draggableItems).forEach(item => {
-      if (item.droppableId === draggableItem.droppableId
-        && item.draggableId !== draggableItem.draggableId) {
-        const style = calculateDraggableItemStyle(draggableItems[item.draggableId], {x: event.clientX}, draggableItems[draggableItem.draggableId], droppableItem?.config?.fixedGap, false);
+      if (item.droppableId === draggingItem.droppableId
+        && item.draggableId !== draggingItem.draggableId) {
+        const style = calculateDraggableItemStyle(draggableItems[item.draggableId], {x: event.clientX}, draggableItems[draggingItem.draggableId], droppableItem.config.fixedGap, false);
         draggableItems[item.draggableId] = {
           ...draggableItems[item.draggableId],
           style,
@@ -201,8 +219,8 @@ export function getDragStartData(draggableId, event, {fixedItemHeight, droppable
   return {
     draggingItem: {
       draggableId,
-      droppableId: draggableItem?.droppableId,
-      index: draggableItem?.index,
+      droppableId: draggingItem.droppableId,
+      index: draggingItem.index,
     },
     droppableItems,
     draggableItems,
@@ -261,5 +279,7 @@ function calculateDestination(droppableItem, draggableItems, draggingItem, mouse
     droppableId: droppableItem.droppableId,
     config: droppableItem.config,
     index: left.length,
+    validationResult: droppableItem.validationResult,
+    canDropped: droppableItem.canDropped,
   };
 }
