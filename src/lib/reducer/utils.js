@@ -124,7 +124,7 @@ function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem,
   }
 }
 
-export function getDragStartData(draggingItem, source, event, {fixedItemHeight, droppableRefs, draggableRefs}) {
+export function getDragStartData(draggingItem, source, metadata, event, {fixedItemHeight, droppableRefs, draggableRefs}) {
   const droppableItems = {}, draggableItems = {};
   const {draggableId} = draggingItem;
   const droppableId = draggingItem.droppableId;
@@ -141,6 +141,7 @@ export function getDragStartData(draggingItem, source, event, {fixedItemHeight, 
         validationResult = droppable.config.validation({
           draggableId,
           source,
+          metadata,
         }) !== false;
       } catch (error) {
         validationResult = false;

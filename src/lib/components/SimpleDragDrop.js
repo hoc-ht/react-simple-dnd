@@ -6,7 +6,7 @@ import {onDragEndAC, onDragStartAC, onMovingAC} from '../reducer/actions';
 import {throttle} from '../utils';
 import {getDragStartData, handleDragEnd} from '../reducer/utils';
 
-const useSimpleDragDrop = ({fixedItemHeight, onDragEnd, onDragStart, getDraggableIds}) => {
+const useSimpleDragDrop = ({fixedItemHeight, onDragEnd, onDragStart, getDragMetadata}) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const stateRef = React.useRef(state);
   stateRef.current = state;
@@ -63,24 +63,25 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd, onDragStart, getDraggabl
       index: draggingItem.index,
     };
 
-    if (getDraggableIds) {
-      source.draggableIds = getDraggableIds(draggableId, source);
+    let metadata = undefined;
+    if (getDragMetadata) {
+      metadata = getDragMetadata(draggableId, source);
     }
 
-    if (!source.draggableIds) {
-      source.draggableIds = [draggingItem.draggableId];
-    }
-
-    const data = getDragStartData(draggingItem, source, event, {fixedItemHeight, droppableRefs, draggableRefs});
-    dispatch(onDragStartAC(data));
+    const data = getDragStartData(draggingItem, source, metadata, event, {fixedItemHeight, droppableRefs, draggableRefs});
+    dispatch(onDragStartAC({
+      ...data,
+      metadata,
+    }));
 
     if (onDragStart) {
       onDragStart({
         source,
+        metadata,
         draggableId: draggingItem.draggableId,
       }, event);
     }
-  }, [fixedItemHeight, onDragStart, getDraggableIds]);
+  }, [fixedItemHeight, onDragStart, getDragMetadata]);
 
   const handleMouseMove = React.useCallback(throttle(function (event) {
     const {isDragging} = stateRef.current;
@@ -101,14 +102,15 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd, onDragStart, getDraggabl
     }
     event.preventDefault();
     event.stopPropagation();
-    const {draggingItem, source} = stateRef.current;
+    const {draggingItem, source, metadata} = stateRef.current;
     const {destination, ...newState} = handleDragEnd(mousePosRef.current, stateRef.current);
     dispatch(onDragEndAC(newState));
     if (onDragEnd) {
       onDragEnd({
-        source,
         draggableId: draggingItem.draggableId,
+        source,
         destination,
+        metadata,
       }, event);
     }
   }, [onDragEnd]);
@@ -150,7 +152,7 @@ SimpleDragDrop.propTypes = {
   fixedItemHeight: PropTypes.number,
   onDragStart: PropTypes.func,
   onDragEnd: PropTypes.func,
-  getDraggableIds: PropTypes.func,
+  getDragMetadata: PropTypes.func,
 };
 
 SimpleDragDrop.defaultProps = {

@@ -4,17 +4,15 @@ import ImageItem from './ImageItem';
 import {getRealId} from './utils';
 
 class ImageList extends React.PureComponent {
-  validation = ({source}) => {
+  validation = ({draggableId, source}) => {
     const {droppableId, images} = this.props;
     if (source.droppableId === droppableId) {
       return true;
     }
-    for (let draggableId of source.draggableIds) {
-      const id = getRealId(draggableId);
-      const isExisted = images.find(item => item.id === id);
-      if (isExisted) {
-        return false;
-      }
+    const id = getRealId(draggableId);
+    const isExisted = images.find(item => item.id === id);
+    if (isExisted) {
+      return false;
     }
   };
 

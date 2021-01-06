@@ -10,6 +10,7 @@ const Draggable = React.memo(function Draggable({children, draggableId, index}) 
     draggingItem,
     draggableItems,
     source,
+    metadata,
   } = useSimpleDragDropContext();
   const {droppableId} = useDroppableContext();
   const innerRef = React.useRef();
@@ -46,6 +47,7 @@ const Draggable = React.memo(function Draggable({children, draggableId, index}) 
     draggingOver: null,
     isDropAnimating: false,
     source,
+    metadata,
   };
 
   return children(provided, snapshot);

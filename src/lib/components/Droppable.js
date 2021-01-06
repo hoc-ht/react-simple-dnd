@@ -8,6 +8,7 @@ const Droppable = React.memo(function Droppable({children, droppableId, ...rest}
     unregisterDroppableItem,
     droppableItems,
     source,
+    metadata,
     isDragging,
   } = useSimpleDragDropContext();
   const innerRef = React.useRef();
@@ -35,6 +36,7 @@ const Droppable = React.memo(function Droppable({children, droppableId, ...rest}
   const snapshot = {
     isDraggingOver: !!droppableItem?.isDraggingOver,
     source,
+    metadata,
   };
   if (isDragging) {
     snapshot.validationResult = droppableItem?.validationResult;

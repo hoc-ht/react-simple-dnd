@@ -7,6 +7,7 @@ export const initialState = {
   source: null,
   droppableItems: {},
   draggableItems: {},
+  metadata: undefined,
 };
 
 const reducer = (state, action) => {
@@ -24,6 +25,8 @@ const reducer = (state, action) => {
         return {
           ...state,
           ...action.payload,
+          isDragging: false,
+          metadata: undefined,
         };
       })();
     case ON_MOVING:
