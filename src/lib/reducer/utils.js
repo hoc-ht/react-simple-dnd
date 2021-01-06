@@ -92,7 +92,7 @@ function calculateDraggingItemStyle(draggableItem, mousePosition) {
     zIndex: 1500,
     pointerEvents: 'none',
     transform: `translate(${translateX}px, ${translateY}px)`,
-    transition: 'transform 0.15s cubic-bezier(.2,1,.1,1)',
+    transition: 'transform 50ms ease',
   };
 }
 
