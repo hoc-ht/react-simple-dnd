@@ -124,7 +124,7 @@ function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem,
   }
 }
 
-export function getDragStartData(draggingItem, event, {fixedItemHeight, droppableRefs, draggableRefs}) {
+export function getDragStartData(draggingItem, source, event, {fixedItemHeight, droppableRefs, draggableRefs}) {
   const droppableItems = {}, draggableItems = {};
   const {draggableId} = draggingItem;
   const droppableId = draggingItem.droppableId;
@@ -140,9 +140,7 @@ export function getDragStartData(draggingItem, event, {fixedItemHeight, droppabl
       try {
         validationResult = droppable.config.validation({
           draggableId,
-          source: {
-            droppableId: draggingItem.droppableId,
-          },
+          source,
         }) !== false;
       } catch (error) {
         validationResult = false;
@@ -222,6 +220,7 @@ export function getDragStartData(draggingItem, event, {fixedItemHeight, droppabl
       droppableId: draggingItem.droppableId,
       index: draggingItem.index,
     },
+    source,
     droppableItems,
     draggableItems,
   };
@@ -255,6 +254,7 @@ export function handleDragEnd(mousePosition, state) {
     draggableItems: newDraggableItems,
     droppableItems: newDroppableItems,
     draggingItem: null,
+    source: null,
     isDragging: false,
   };
 }

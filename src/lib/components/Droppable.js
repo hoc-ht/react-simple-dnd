@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {DroppableContext, useSimpleDragDropContext} from '../context';
 
 const Droppable = React.memo(function Droppable({children, droppableId, ...rest}) {
-  const {registerDroppableItem, unregisterDroppableItem, droppableItems} = useSimpleDragDropContext();
+  const {registerDroppableItem, unregisterDroppableItem, droppableItems, source} = useSimpleDragDropContext();
   const innerRef = React.useRef();
   const configRef = React.useRef({});
   configRef.current = rest;
@@ -28,6 +28,7 @@ const Droppable = React.memo(function Droppable({children, droppableId, ...rest}
   };
   const snapshot = {
     isDraggingOver: !!droppableItem?.isDraggingOver,
+    source,
   };
   if (snapshot.isDraggingOver) {
     snapshot.validationResult = droppableItem?.validationResult;

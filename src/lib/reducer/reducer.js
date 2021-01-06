@@ -4,6 +4,7 @@ import {handleMove} from './utils';
 export const initialState = {
   isDragging: false,
   draggingItem: null,
+  source: null,
   droppableItems: {},
   draggableItems: {},
 };

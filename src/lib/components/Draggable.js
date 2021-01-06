@@ -8,7 +8,8 @@ const Draggable = React.memo(function Draggable({children, draggableId, index}) 
     unregisterDraggableItem,
     handleDragStart,
     draggingItem,
-    draggableItems
+    draggableItems,
+    source,
   } = useSimpleDragDropContext();
   const {droppableId} = useDroppableContext();
   const innerRef = React.useRef();
@@ -44,6 +45,7 @@ const Draggable = React.memo(function Draggable({children, draggableId, index}) 
     isDragging: draggableId === draggingItem?.draggableId,
     draggingOver: null,
     isDropAnimating: false,
+    source,
   };
 
   return children(provided, snapshot);
