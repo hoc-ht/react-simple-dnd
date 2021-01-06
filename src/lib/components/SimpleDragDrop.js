@@ -6,7 +6,7 @@ import {onDragEndAC, onDragStartAC, onMovingAC} from '../reducer/actions';
 import {throttle} from '../utils';
 import {getDragStartData, handleDragEnd} from '../reducer/utils';
 
-const useSimpleDragDrop = ({fixedItemHeight, onDragEnd}) => {
+const useSimpleDragDrop = ({fixedItemHeight, onDragEnd, onDragStart}) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const stateRef = React.useRef(state);
   stateRef.current = state;
@@ -44,14 +44,25 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd}) => {
     if (stateRef.current.isDragging) {
       return;
     }
-    const draggableRef = draggableRefs.current[draggableId]?.innerRef?.current;
+    const draggingItem = draggableRefs.current[draggableId];
+    const draggableRef = draggingItem?.innerRef?.current;
     if (!draggableRef) {
       console.error(new Error('Draggable ref with id ' + draggableId + ' not found'));
       return;
     }
     const data = getDragStartData(draggableId, event, {fixedItemHeight, droppableRefs, draggableRefs});
     dispatch(onDragStartAC(data));
-  }, [fixedItemHeight]);
+    if (onDragStart) {
+      onDragStart({
+        source: {
+          droppableId: draggingItem.droppableId,
+          config: droppableRefs.current[draggingItem.droppableId]?.config,
+          index: draggingItem.index,
+        },
+        draggableId: draggingItem.draggableId,
+      });
+    }
+  }, [fixedItemHeight, onDragStart]);
 
   const handleMouseMove = React.useCallback(throttle(function (event) {
     const {isDragging} = stateRef.current;
@@ -123,6 +134,7 @@ const SimpleDragDrop = React.memo(function SimpleDragDrop(props) {
 
 SimpleDragDrop.propTypes = {
   fixedItemHeight: PropTypes.number,
+  onDragStart: PropTypes.func,
   onDragEnd: PropTypes.func,
 };
 
