@@ -1,6 +1,7 @@
 import React from 'react';
 import {Droppable} from '../lib';
 import ImageItem from './ImageItem';
+import {getRealId} from './utils';
 
 class ImageList extends React.PureComponent {
   render() {

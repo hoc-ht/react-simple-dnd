@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import {SimpleDragDrop} from '../lib';
 import ImageList from './ImageList';
+import {getRealId} from './utils';
 
 class App extends React.PureComponent {
   state = {
@@ -24,10 +25,6 @@ class App extends React.PureComponent {
     ],
   };
 
-  getRealId = (draggableId) => {
-    return draggableId.split('.')[0] * 1;
-  };
-
   onDragEnd = (event) => {
     const {source, destination, draggableId} = event;
     if (destination?.droppableId === source.droppableId && destination.index === source.index) {
@@ -40,7 +37,7 @@ class App extends React.PureComponent {
       if (source.droppableId !== destination.droppableId) {
         let srcItems = [...prevState[source.droppableId]];
         let dstItems = [...prevState[destination.droppableId]];
-        const id = this.getRealId(draggableId);
+        const id = getRealId(draggableId);
         const existedItem = dstItems.find(item => item.id === id);
         if (existedItem) {
           return null;
