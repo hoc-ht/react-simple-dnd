@@ -3,10 +3,10 @@ import {Draggable} from '../lib';
 
 class ImageItem extends React.PureComponent {
   render() {
-    const {item, itemIndex, droppableId, isDropDisabled} = this.props;
+    const {item, itemIndex, draggableId, isDropDisabled} = this.props;
     return (
       <Draggable
-        draggableId={`${item.id}.${droppableId}`}
+        draggableId={draggableId}
         index={itemIndex}
       >
         {
