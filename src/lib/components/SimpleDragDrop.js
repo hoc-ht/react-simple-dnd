@@ -78,7 +78,7 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd, onDragStart, getDraggabl
       onDragStart({
         source,
         draggableId: draggingItem.draggableId,
-      });
+      }, event);
     }
   }, [fixedItemHeight, onDragStart, getDraggableIds]);
 
@@ -109,7 +109,7 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd, onDragStart, getDraggabl
         source,
         draggableId: draggingItem.draggableId,
         destination,
-      });
+      }, event);
     }
   }, [onDragEnd]);
 
