@@ -141,7 +141,7 @@ export function getDragStartData(draggingItem, source, metadata, event, {fixedIt
           draggableId,
           source,
           metadata,
-        }) !== false;
+        }, event) !== false;
       } catch (error) {
         validationResult = false;
       }
