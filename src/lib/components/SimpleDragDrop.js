@@ -139,7 +139,7 @@ const SimpleDragDrop = React.memo(function SimpleDragDrop(props) {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [handleMouseMove]);
+  }, [handleMouseMove, handleMouseUp]);
 
   return (
     <SimpleDragDropContext.Provider value={simpleDragDrop}>

@@ -24,29 +24,31 @@ const Droppable = React.memo(function Droppable({children, droppableId, ...rest}
   }, [registerDroppableItem, unregisterDroppableItem, droppableId]);
 
   if (typeof children !== 'function') {
-    console.error(new Error('Droppable children must be a function!'));
-    return children;
+    throw new Error('Droppable children must be a function!');
   }
-  const provided = {
-    innerRef,
-    droppableProps: {
-      'data-sdd-droppable-id': droppableId,
-    },
-  };
-  const snapshot = {
-    isDraggingOver: !!droppableItem?.isDraggingOver,
-    source,
-    metadata,
-  };
-  if (isDragging) {
-    snapshot.validationResult = droppableItem?.validationResult;
-    snapshot.canDropped = droppableItem?.canDropped;
-  }
-  return (
-    <DroppableContext.Provider value={{droppableId}}>
-      {children(provided, snapshot)}
-    </DroppableContext.Provider>
-  );
+
+  return React.useMemo(function () {
+    const provided = {
+      innerRef,
+      droppableProps: {
+        'data-sdd-droppable-id': droppableId,
+      },
+    };
+    const snapshot = {
+      isDraggingOver: !!droppableItem?.isDraggingOver,
+      source,
+      metadata,
+    };
+    if (isDragging) {
+      snapshot.validationResult = droppableItem?.validationResult;
+      snapshot.canDropped = droppableItem?.canDropped;
+    }
+    return (
+      <DroppableContext.Provider value={{droppableId}}>
+        {children(provided, snapshot)}
+      </DroppableContext.Provider>
+    );
+  }, [droppableId, droppableItem, isDragging, source, metadata, children]);
 });
 
 Droppable.propTypes = {

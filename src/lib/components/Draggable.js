@@ -27,30 +27,35 @@ const Draggable = React.memo(function Draggable({children, draggableId, index}) 
   }, [handleDragStart, draggableId]);
 
   if (typeof children !== 'function') {
-    console.error(new Error('Draggable children must be a function!'));
-    return children;
+    throw new Error('Draggable children must be a function!');
   }
-  const provided = {
-    innerRef,
-    draggableProps: {
-      'data-sdd-draggable-id': draggableId,
-      style: draggableItems[draggableId]?.style,
-    },
-    dragHandleProps: {
-      draggable: false,
-      onDragStart,
-    },
-  };
 
-  const snapshot = {
-    isDragging: draggableId === draggingItem?.draggableId,
-    draggingOver: null,
-    isDropAnimating: false,
-    source,
-    metadata,
-  };
+  const style = draggableItems[draggableId]?.style;
+  const isThisDragging = draggableId === draggingItem?.draggableId;
 
-  return children(provided, snapshot);
+  return React.useMemo(function () {
+    const provided = {
+      innerRef,
+      draggableProps: {
+        'data-sdd-draggable-id': draggableId,
+        style,
+      },
+      dragHandleProps: {
+        draggable: false,
+        onDragStart,
+      },
+    };
+
+    const snapshot = {
+      isDragging: isThisDragging,
+      draggingOver: null,
+      isDropAnimating: false,
+      source,
+      metadata,
+    };
+
+    return children(provided, snapshot);
+  }, [draggableId, style, isThisDragging, source, metadata, children, onDragStart]);
 });
 
 Draggable.propTypes = {
