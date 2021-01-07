@@ -54,7 +54,6 @@ const Droppable = React.memo(function Droppable({children, droppableId, ...rest}
 Droppable.propTypes = {
   droppableId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   isDropDisabled: PropTypes.bool,
-  copyMode: PropTypes.bool,
   fixedGap: PropTypes.number,
   validation: PropTypes.func, // validation function, must return false or throw an error to disable drop
 };
