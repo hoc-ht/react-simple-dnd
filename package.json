@@ -1,6 +1,6 @@
 {
   "name": "@hoc-ht/react-simple-dnd",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": false,
   "author": "Hoang Thai Hoc (https://github.com/hoc-ht)",
   "main": "dist/index.js",
