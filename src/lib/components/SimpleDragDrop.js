@@ -65,10 +65,14 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd, onDragStart, getDragMeta
 
     let metadata = undefined;
     if (getDragMetadata) {
-      metadata = getDragMetadata(draggableId, source);
+      metadata = getDragMetadata({draggableId, source}, event);
     }
 
-    const data = getDragStartData(draggingItem, source, metadata, event, {fixedItemHeight, droppableRefs, draggableRefs});
+    const data = getDragStartData(draggingItem, source, metadata, event, {
+      fixedItemHeight,
+      droppableRefs,
+      draggableRefs
+    });
     dispatch(onDragStartAC({
       ...data,
       metadata,
