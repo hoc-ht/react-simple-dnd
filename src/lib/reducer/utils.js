@@ -12,6 +12,7 @@ export function handleMove(mousePosition, state) {
     ...state,
     draggableItems: newDraggableItems,
     droppableItems: newDroppableItems,
+    mousePosition,
   };
 }
 
@@ -256,6 +257,7 @@ export function handleDragEnd(mousePosition, state) {
     draggingItem: null,
     source: null,
     isDragging: false,
+    mousePosition: null,
   };
 }
 
@@ -281,5 +283,27 @@ function calculateDestination(droppableItem, draggableItems, draggingItem, mouse
     index: left.length,
     validationResult: droppableItem.validationResult,
     canDropped: droppableItem.canDropped,
+  };
+}
+
+export function handleRevalidated({droppableItems}, state) {
+  const {draggableItems, draggingItem, mousePosition} = state;
+  if (!draggingItem || !draggableItems[draggingItem?.draggableId]) {
+    return state;
+  }
+  const newDroppableItems = {...state.droppableItems};
+  Object.keys(droppableItems).forEach(droppableId => {
+    newDroppableItems[droppableId] = {
+      ...newDroppableItems[droppableId],
+      validationResult: droppableItems[droppableId].validationResult,
+      canDropped: droppableItems[droppableId].validationResult !== false && !droppableItems[droppableId].config?.isDropDisabled,
+    };
+  });
+  const droppingItem = Object.values(newDroppableItems).find(item => item.isDraggingOver);
+  const newDraggableItems = calculateDraggableItemsData(draggableItems, draggingItem, droppingItem, mousePosition);
+  return {
+    ...state,
+    draggableItems: newDraggableItems,
+    droppableItems: newDroppableItems,
   };
 }

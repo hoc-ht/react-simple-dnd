@@ -1,5 +1,5 @@
-import {ON_DRAG_END, ON_DRAG_START, ON_MOVING} from './actions';
-import {handleMove} from './utils';
+import {ON_DRAG_END, ON_DRAG_START, ON_MOVING, ON_REVALIDATED} from './actions';
+import {handleMove, handleRevalidated} from './utils';
 
 export const initialState = {
   isDragging: false,
@@ -8,6 +8,7 @@ export const initialState = {
   droppableItems: {},
   draggableItems: {},
   metadata: undefined,
+  mousePosition: undefined,
 };
 
 const reducer = (state, action) => {
@@ -32,6 +33,10 @@ const reducer = (state, action) => {
     case ON_MOVING:
       return (() => {
         return handleMove(action.payload, state);
+      })();
+    case ON_REVALIDATED:
+      return (() => {
+        return handleRevalidated(action.payload, state);
       })();
     default:
       return state;

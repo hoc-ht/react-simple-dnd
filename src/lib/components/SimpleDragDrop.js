@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import reducer, {initialState} from '../reducer/reducer';
 import {SimpleDragDropContext} from '../context';
-import {onDragEndAC, onDragStartAC, onMovingAC} from '../reducer/actions';
+import {onDragEndAC, onDragStartAC, onMovingAC, onRevalidatedAC} from '../reducer/actions';
 import {throttle} from '../utils';
 import {getDragStartData, handleDragEnd} from '../reducer/utils';
 
@@ -119,11 +119,41 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd, onDragStart, getDragMeta
     }
   }, [onDragEnd]);
 
+  const revalidate = React.useCallback(function (event) {
+    if (!stateRef.current.isDragging) {
+      return;
+    }
+    const droppableItems = {};
+    const {draggingItem: {draggableId}, source, metadata} = stateRef.current;
+    Object.keys(droppableRefs.current).forEach(droppableId => {
+      const droppable = droppableRefs.current[droppableId];
+      let validationResult;
+      if (droppable.config?.validation) {
+        try {
+          validationResult = droppable.config.validation({
+            draggableId,
+            source,
+            metadata,
+          }, event) !== false;
+        } catch (error) {
+          validationResult = false;
+        }
+      }
+      droppableItems[droppableId] = {
+        validationResult,
+      };
+    });
+    dispatch(onRevalidatedAC({
+      droppableItems,
+    }));
+  }, []);
+
   return {
     ...state,
     handleDragStart,
     handleMouseMove,
     handleMouseUp,
+    revalidate,
     registerDroppableItem,
     registerDraggableItem,
     unregisterDroppableItem,
@@ -131,7 +161,7 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd, onDragStart, getDragMeta
   };
 };
 
-const SimpleDragDrop = React.memo(function SimpleDragDrop(props) {
+const SimpleDragDrop = React.memo(React.forwardRef(function SimpleDragDrop(props, ref) {
   const {children, ...rest} = props;
   const simpleDragDrop = useSimpleDragDrop(rest);
   const {handleMouseMove, handleMouseUp} = simpleDragDrop;
@@ -145,12 +175,16 @@ const SimpleDragDrop = React.memo(function SimpleDragDrop(props) {
     };
   }, [handleMouseMove, handleMouseUp]);
 
+  if (ref && typeof ref === 'object') {
+    ref.current = simpleDragDrop;
+  }
+
   return (
     <SimpleDragDropContext.Provider value={simpleDragDrop}>
       {children}
     </SimpleDragDropContext.Provider>
   );
-});
+}));
 
 SimpleDragDrop.propTypes = {
   fixedItemHeight: PropTypes.number,
