@@ -296,14 +296,21 @@ export function handleRevalidated({droppableItems}, state) {
     newDroppableItems[droppableId] = {
       ...newDroppableItems[droppableId],
       validationResult: droppableItems[droppableId].validationResult,
-      canDropped: droppableItems[droppableId].validationResult !== false && !droppableItems[droppableId].config?.isDropDisabled,
+      canDropped: droppableItems[droppableId].validationResult !== false && !newDroppableItems[droppableId].config?.isDropDisabled,
     };
   });
-  const droppingItem = Object.values(newDroppableItems).find(item => item.isDraggingOver);
-  const newDraggableItems = calculateDraggableItemsData(draggableItems, draggingItem, droppingItem, mousePosition);
-  return {
-    ...state,
-    draggableItems: newDraggableItems,
-    droppableItems: newDroppableItems,
-  };
+  if (mousePosition) {
+    const droppingItem = Object.values(newDroppableItems).find(item => item.isDraggingOver);
+    const newDraggableItems = calculateDraggableItemsData(draggableItems, draggingItem, droppingItem, mousePosition);
+    return {
+      ...state,
+      draggableItems: newDraggableItems,
+      droppableItems: newDroppableItems,
+    };
+  } else {
+    return {
+      ...state,
+      droppableItems: newDroppableItems,
+    };
+  }
 }
