@@ -25,6 +25,22 @@ class App extends React.PureComponent {
     ],
   };
 
+  dndRef = React.createRef();
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.doRevalidate);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.doRevalidate);
+  }
+
+  doRevalidate = (event) => {
+    if (this.dndRef.current) {
+      this.dndRef.current.revalidate(event);
+    }
+  };
+
   onDragStart = () => {
     console.log('Drag start');
   };
@@ -72,7 +88,7 @@ class App extends React.PureComponent {
   render() {
     const {list1, list2, list3} = this.state;
     return (
-      <SimpleDragDrop fixedItemHeight={66} onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
+      <SimpleDragDrop ref={this.dndRef} fixedItemHeight={66} onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
         <div className="App">
           <ImageList images={list1} droppableId="list1" className="image-list" isDropDisabled={true} copyMode={true}/>
           <div className="image-list-container">

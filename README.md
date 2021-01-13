@@ -36,7 +36,7 @@ _An area that can be dropped into. Contains `<Draggable />`_
 | droppableId    _(required)_     | string   |                 |                                                                                                                                         |
 | isDropDisabled                  | bool     |      false      |                       |
 | fixedGap                        | number   |                 | Define the gap between two `<Draggable />` items                      |
-| validation                      | function |                 | Callback triggered when a drag has started, should return **false** or **throw** an error to disable drop on this area                     |
+| validation                      | function |                 | `function({draggableId, source, metadata}, event) {}`<br/> triggered when a drag has started or manually call `revalidate` method, should return **false** or **throw** an error to disable drop on this area                     |
 
 All other props will be passed as droppable config and can be access in the result of **onDragEnd** method.
 
@@ -49,6 +49,16 @@ _What can be dragged around_
 | index                           | number   |                 | Current item index                      |
 
 **Important note**: All `draggableId` in a `<SimpleDragDrop />` should be unique.
+
+## Methods
+
+### revalidate(event)
+
+Trigger validation for all `<Droppable />` item.
+
+- `event`: event which will be passed to validation method
+
+Return: `none`
 
 ## Authors
 

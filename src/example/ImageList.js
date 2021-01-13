@@ -4,7 +4,10 @@ import ImageItem from './ImageItem';
 import {getRealId} from './utils';
 
 class ImageList extends React.PureComponent {
-  validation = ({draggableId, source}) => {
+  validation = ({draggableId, source}, event) => {
+    if (event?.keyCode === 68) { // User press "D" key
+      return false;
+    }
     const {droppableId, images} = this.props;
     if (source.droppableId === droppableId) {
       return true;
