@@ -1,16 +1,18 @@
-# React Simple DnD
+# React Simple Drag & Drop
 
-[![npm](https://img.shields.io/npm/v/@hoc-ht/react-simple-dnd)](https://www.npmjs.com/package/@hoc-ht/react-simple-dnd)
-[![npm](https://img.shields.io/npm/dependency-version/@hoc-ht/react-simple-dnd/peer/react)](https://www.npmjs.com/package/@hoc-ht/react-simple-dnd)
-[![npm](https://img.shields.io/npm/l/@hoc-ht/react-simple-dnd)](https://www.npmjs.com/package/@hoc-ht/react-simple-dnd)
+[![npm](https://img.shields.io/npm/v/react-simple-drag-drop)](https://www.npmjs.com/package/react-simple-drag-drop)
+[![npm](https://img.shields.io/npm/dependency-version/react-simple-drag-drop/peer/react)](https://www.npmjs.com/package/react-simple-drag-drop)
+[![npm](https://img.shields.io/npm/l/react-simple-drag-drop)](https://www.npmjs.com/package/react-simple-drag-drop)
 
 A simple ReactJS drag & drop library.
+
+Renamed from [@hoc-ht/react-simple-dnd](https://www.npmjs.com/package/@hoc-ht/react-simple-dnd).
 
 ## Installation
 
 Run the following command:
 
-`npm install @hoc-ht/react-simple-dnd`
+`npm install react-simple-drag-drop`
 
 ## Usage
 
