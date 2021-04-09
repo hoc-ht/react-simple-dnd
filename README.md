@@ -35,6 +35,7 @@ _An area that can be dropped into. Contains `<Draggable />`_
 
 | Props                           |  Type    |  Default value  | Description                                                                                                                                                   |
 | :------------------------------ | :------: | :-------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| children    _(required)_        | function |                 |                                                                                                                                         |
 | droppableId    _(required)_     | string   |                 |                                                                                                                                         |
 | isDropDisabled                  | bool     |      false      |                       |
 | fixedGap                        | number   |                 | Define the gap between two `<Draggable />` items                      |
@@ -47,10 +48,19 @@ _What can be dragged around_
 
 | Props                           |  Type    |  Default value  | Description                                                                                                                                                   |
 | :------------------------------ | :------: | :-------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| children    _(required)_        | function |                 |                                                                                                                                         |
 | draggableId    _(required)_     | string   |                 |                                                                                                                                         |
 | index                           | number   |                 | Current item index                      |
 
 **Important note**: All `draggableId` in a `<SimpleDragDrop />` should be unique.
+
+### `<DraggingItem />`
+_Custom rendering dragging item if you want_
+
+| Props                           |  Type    |  Default value  | Description                                                                                                                                                   |
+| :------------------------------ | :------: | :-------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| children    _(required)_        | function |                 |  function ({droppableItem, source, metadata}) {}                                                                                                                                       |
+
 
 ## Methods
 

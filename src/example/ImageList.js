@@ -45,6 +45,7 @@ class ImageList extends React.PureComponent {
                       draggableId={`${item.id}.${droppableId}`}
                       key={`${droppableId}.${item.id}`}
                       isDropDisabled={isDropDisabled}
+                      customDraggingItem={droppableId === 'list3'}
                     />
                   ))
                 }

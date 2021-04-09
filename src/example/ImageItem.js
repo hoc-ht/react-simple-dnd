@@ -3,7 +3,7 @@ import {Draggable} from '../lib';
 
 class ImageItem extends React.PureComponent {
   render() {
-    const {item, itemIndex, draggableId, isDropDisabled} = this.props;
+    const {item, itemIndex, draggableId, isDropDisabled, customDraggingItem} = this.props;
     return (
       <Draggable
         draggableId={draggableId}
@@ -17,6 +17,7 @@ class ImageItem extends React.PureComponent {
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
+                style={customDraggingItem ? {} : provided.draggableProps.style}
               >
                 <img src={item.src}/>
               </div>

@@ -3,6 +3,7 @@ import './App.css';
 import {SimpleDragDrop} from '../lib';
 import ImageList from './ImageList';
 import {getRealId} from './utils';
+import DraggingItem from '../lib/components/DraggingItem';
 
 class App extends React.PureComponent {
   state = {
@@ -96,6 +97,20 @@ class App extends React.PureComponent {
             <ImageList images={list3} droppableId="list3" className="image-list image-list-small image-list-fixed-width" fixedGap={8} copyMode={true}/>
           </div>
         </div>
+        <DraggingItem>
+          {
+            ({droppableItem, source}) => (
+              <div
+                className="dragging-item"
+                style={droppableItem?.style}
+              >
+                {
+                  droppableItem && source?.droppableId === 'list3' && <span>An other way to display dragging item: {droppableItem.draggableId}</span>
+                }
+              </div>
+            )
+          }
+        </DraggingItem>
       </SimpleDragDrop>
     );
   }
