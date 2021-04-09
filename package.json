@@ -1,8 +1,11 @@
 {
   "name": "react-simple-drag-drop",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "private": false,
-  "author": "Hoang Thai Hoc (https://github.com/hoc-ht)",
+  "author": {
+    "name": "Hoang Thai Hoc",
+    "url": "https://github.com/hoc-ht"
+  },
   "main": "dist/index.js",
   "module": "dist/index.js",
   "files": [
