@@ -108,13 +108,13 @@ class App extends React.PureComponent {
         </div>
         <DraggingItem>
           {
-            ({droppableItem, source}) => (
+            ({draggableItem, source}) => (
               <div
                 className="dragging-item"
-                style={droppableItem?.style}
+                style={draggableItem?.style}
               >
                 {
-                  droppableItem && source?.droppableId === 'list3' && <span>An other way to display dragging item: {droppableItem.draggableId}</span>
+                  draggableItem && source?.droppableId === 'list3' && <span>An other way to display dragging item: {draggableItem.draggableId}</span>
                 }
               </div>
             )
