@@ -124,7 +124,7 @@ function calculateDraggableItemStyle(draggableItem, mousePosition, draggingItem,
   }
 }
 
-export function getDragStartData(draggingItem, source, metadata, event, {fixedItemHeight, droppableRefs, draggableRefs}) {
+export function getDragStartData(draggingItem, source, metadata, event, {getDraggingItemSize, droppableRefs, draggableRefs}) {
   const droppableItems = {}, draggableItems = {};
   const {draggableId} = draggingItem;
   const droppableId = draggingItem.droppableId;
@@ -173,9 +173,12 @@ export function getDragStartData(draggingItem, source, metadata, event, {fixedIt
   let offsetLeft = event.clientX - box.borderBox.left;
   let offsetTop = event.clientY - box.borderBox.top;
 
-  if (fixedItemHeight) {
-    height = fixedItemHeight;
-    width = box.borderBox.width * height / box.borderBox.height;
+  if (getDraggingItemSize && typeof getDraggingItemSize === 'function') {
+    const size = getDraggingItemSize(box.borderBox);
+    if (size) {
+      width = size.width;
+      height = size.height;
+    }
     offsetLeft = width * offsetLeft / box.borderBox.width;
     offsetTop = height * offsetTop / box.borderBox.height;
   }

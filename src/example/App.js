@@ -86,10 +86,19 @@ class App extends React.PureComponent {
     });
   };
 
+  getDraggingItemSize = (originalSize) => {
+    const height = 66;
+    const width = originalSize.width * height / originalSize.height;
+    return {
+      width,
+      height,
+    };
+  };
+
   render() {
     const {list1, list2, list3} = this.state;
     return (
-      <SimpleDragDrop ref={this.dndRef} fixedItemHeight={66} onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
+      <SimpleDragDrop ref={this.dndRef} getDraggingItemSize={this.getDraggingItemSize} onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
         <div className="App">
           <ImageList images={list1} droppableId="list1" className="image-list" isDropDisabled={true} copyMode={true}/>
           <div className="image-list-container">

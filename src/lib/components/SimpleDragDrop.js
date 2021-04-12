@@ -6,7 +6,7 @@ import {onDragEndAC, onDragStartAC, onMovingAC, onRevalidatedAC} from '../reduce
 import {throttle} from '../utils';
 import {getDragStartData, handleDragEnd} from '../reducer/utils';
 
-const useSimpleDragDrop = ({fixedItemHeight, onDragEnd, onDragStart, getDragMetadata}) => {
+const useSimpleDragDrop = ({getDraggingItemSize, onDragEnd, onDragStart, getDragMetadata}) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const stateRef = React.useRef(state);
   stateRef.current = state;
@@ -69,7 +69,7 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd, onDragStart, getDragMeta
     }
 
     const data = getDragStartData(draggingItem, source, metadata, event, {
-      fixedItemHeight,
+      getDraggingItemSize,
       droppableRefs,
       draggableRefs
     });
@@ -85,7 +85,7 @@ const useSimpleDragDrop = ({fixedItemHeight, onDragEnd, onDragStart, getDragMeta
         draggableId: draggingItem.draggableId,
       }, event);
     }
-  }, [fixedItemHeight, onDragStart, getDragMetadata]);
+  }, [getDraggingItemSize, onDragStart, getDragMetadata]);
 
   const handleMouseMove = React.useCallback(throttle(function (event) {
     const {isDragging} = stateRef.current;
@@ -187,14 +187,13 @@ const SimpleDragDrop = React.memo(React.forwardRef(function SimpleDragDrop(props
 }));
 
 SimpleDragDrop.propTypes = {
-  fixedItemHeight: PropTypes.number,
   onDragStart: PropTypes.func,
   onDragEnd: PropTypes.func,
+  getDraggingItemSize: PropTypes.func,
   getDragMetadata: PropTypes.func,
 };
 
 SimpleDragDrop.defaultProps = {
-  fixedItemHeight: 0,
 };
 
 export default SimpleDragDrop;

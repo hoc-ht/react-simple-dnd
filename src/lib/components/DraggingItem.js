@@ -13,15 +13,15 @@ function DraggingItem({children}) {
     throw new Error('GhostRenderer children must be a function!');
   }
 
-  const droppableItem = isDragging ? draggableItems[draggingItem?.draggableId] : undefined;
+  const draggableItem = isDragging ? draggableItems[draggingItem?.draggableId] : undefined;
 
   return React.useMemo(function () {
     return children({
-      droppableItem,
+      draggableItem,
       source,
       metadata,
     });
-  }, [droppableItem, source, metadata, children]);
+  }, [draggableItem, source, metadata, children]);
 }
 
 export default React.memo(DraggingItem);
