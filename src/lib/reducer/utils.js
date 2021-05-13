@@ -230,6 +230,22 @@ export function getDragStartData(draggingItem, source, metadata, event, {getDrag
   };
 }
 
+export function getDroppablePosition(droppableRefs) {
+  const droppableItems = {};
+  Object.keys(droppableRefs.current).forEach(id => {
+    const droppable = droppableRefs.current[id];
+    const innerRef = droppable?.innerRef?.current;
+    if (!innerRef) {
+      throw new Error(`Droppable ref with id ${id} not found.`);
+    }
+    const box = getBox(innerRef);
+    droppableItems[id] = {
+      borderBox: box.borderBox,
+    };
+  });
+  return droppableItems;
+}
+
 export function handleDragEnd(mousePosition, state) {
   const {draggableItems, droppableItems, draggingItem} = state;
   const newDraggableItems = {...draggableItems};

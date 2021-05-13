@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import reducer, {initialState} from '../reducer/reducer';
 import {SimpleDragDropContext} from '../context';
-import {onDragEndAC, onDragStartAC, onMovingAC, onRevalidatedAC} from '../reducer/actions';
+import {onDragEndAC, onDragStartAC, onMovingAC, onRevalidatedAC, updateDroppablePositionAC} from '../reducer/actions';
 import {throttle} from '../utils';
-import {getDragStartData, handleDragEnd} from '../reducer/utils';
+import {getDragStartData, getDroppablePosition, handleDragEnd} from '../reducer/utils';
 
 const useSimpleDragDrop = ({getDraggingItemSize, onDragEnd, onDragStart, getDragMetadata}) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
@@ -148,12 +148,20 @@ const useSimpleDragDrop = ({getDraggingItemSize, onDragEnd, onDragStart, getDrag
     }));
   }, []);
 
+  const updatePosition = React.useCallback(function () {
+    const droppableItems = getDroppablePosition(droppableRefs);
+    dispatch(updateDroppablePositionAC({
+      droppableItems,
+    }));
+  }, []);
+
   return {
     ...state,
     handleDragStart,
     handleMouseMove,
     handleMouseUp,
     revalidate,
+    updatePosition,
     registerDroppableItem,
     registerDraggableItem,
     unregisterDroppableItem,
@@ -193,7 +201,6 @@ SimpleDragDrop.propTypes = {
   getDragMetadata: PropTypes.func,
 };
 
-SimpleDragDrop.defaultProps = {
-};
+SimpleDragDrop.defaultProps = {};
 
 export default SimpleDragDrop;
