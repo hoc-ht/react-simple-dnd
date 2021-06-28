@@ -1,4 +1,12 @@
-import {ON_DRAG_END, ON_DRAG_START, ON_MOVING, ON_REVALIDATED, UPDATE_DROPPABLE_POSITION} from './actions';
+import {
+  ON_DRAG_END,
+  ON_DRAG_START,
+  ON_MOVING,
+  ON_REVALIDATED,
+  REGISTER_DROPPABLE_ITEM,
+  UNREGISTER_DROPPABLE_ITEM,
+  UPDATE_DROPPABLE_POSITION,
+} from './actions';
 import {handleMove, handleRevalidated} from './utils';
 
 export const initialState = {
@@ -13,6 +21,29 @@ export const initialState = {
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case REGISTER_DROPPABLE_ITEM:
+      return (() => {
+        const {droppableId} = action.payload;
+        return {
+          ...state,
+          droppableItems: {
+            ...state.droppableItems,
+            [droppableId]: action.payload,
+          },
+        };
+      })();
+    case UNREGISTER_DROPPABLE_ITEM:
+      return (() => {
+        const {droppableId} = action.payload;
+        const droppableItems = {
+          ...state.droppableItems,
+        };
+        delete droppableItems[droppableId];
+        return {
+          ...state,
+          droppableItems,
+        };
+      })();
     case ON_DRAG_START:
       return (() => {
         return {

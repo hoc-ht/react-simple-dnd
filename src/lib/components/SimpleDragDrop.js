@@ -2,9 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import reducer, {initialState} from '../reducer/reducer';
 import {SimpleDragDropContext} from '../context';
-import {onDragEndAC, onDragStartAC, onMovingAC, onRevalidatedAC, updateDroppablePositionAC} from '../reducer/actions';
+import {
+  onDragEndAC,
+  onDragStartAC,
+  onMovingAC,
+  onRevalidatedAC,
+  registerDroppableItemAC,
+  unregisterDroppableItemAC,
+  updateDroppablePositionAC,
+} from '../reducer/actions';
 import {throttle} from '../utils';
 import {getDragStartData, getDroppablePosition, handleDragEnd} from '../reducer/utils';
+import {getBox} from 'css-box-model';
 
 const useSimpleDragDrop = ({getDraggingItemSize, onDragEnd, onDragStart, getDragMetadata}) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
@@ -20,6 +29,14 @@ const useSimpleDragDrop = ({getDraggingItemSize, onDragEnd, onDragStart, getDrag
       innerRef,
       config,
     };
+    const box = getBox(innerRef.current);
+    dispatch(registerDroppableItemAC({
+      droppableId,
+      config,
+      borderBox: box.borderBox,
+      validationResult: undefined,
+      canDropped: !config?.isDropDisabled,
+    }));
   }, []);
 
   const registerDraggableItem = React.useCallback(function (droppableId, draggableId, index, innerRef) {
@@ -33,6 +50,9 @@ const useSimpleDragDrop = ({getDraggingItemSize, onDragEnd, onDragStart, getDrag
 
   const unregisterDroppableItem = React.useCallback(function (droppableId) {
     delete droppableRefs.current[droppableId];
+    dispatch(unregisterDroppableItemAC({
+      droppableId,
+    }));
   }, []);
 
   const unregisterDraggableItem = React.useCallback(function (draggableId) {
@@ -71,7 +91,7 @@ const useSimpleDragDrop = ({getDraggingItemSize, onDragEnd, onDragStart, getDrag
     const data = getDragStartData(draggingItem, source, metadata, event, {
       getDraggingItemSize,
       droppableRefs,
-      draggableRefs
+      draggableRefs,
     });
     dispatch(onDragStartAC({
       ...data,
