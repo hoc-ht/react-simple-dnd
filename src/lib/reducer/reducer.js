@@ -5,7 +5,7 @@ import {
   ON_REVALIDATED,
   REGISTER_DROPPABLE_ITEM,
   UNREGISTER_DROPPABLE_ITEM,
-  UPDATE_DROPPABLE_POSITION,
+  UPDATE_ELEMENT_POSITION,
 } from './actions';
 import {handleMove, handleRevalidated} from './utils';
 
@@ -69,23 +69,38 @@ const reducer = (state, action) => {
       return (() => {
         return handleRevalidated(action.payload, state);
       })();
-    case UPDATE_DROPPABLE_POSITION:
+    case UPDATE_ELEMENT_POSITION:
       return (() => {
-        const {droppableItems} = action.payload;
+        const {droppableItems, draggableItems} = action.payload;
         const newState = {
           ...state,
-          droppableItems: {
-            ...state.droppableItems,
-          },
         };
-        Object.keys(droppableItems).forEach(droppableId => {
-          if (newState.droppableItems[droppableId]) {
-            newState.droppableItems[droppableId] = {
-              ...newState.droppableItems[droppableId],
-              ...droppableItems[droppableId],
-            };
-          }
-        });
+        if (droppableItems) {
+          newState.droppableItems = {
+            ...state.droppableItems,
+          };
+          Object.keys(droppableItems).forEach(droppableId => {
+            if (newState.droppableItems[droppableId]) {
+              newState.droppableItems[droppableId] = {
+                ...newState.droppableItems[droppableId],
+                ...droppableItems[droppableId],
+              };
+            }
+          });
+        }
+        if (draggableItems) {
+          newState.draggableItems = {
+            ...state.draggableItems,
+          };
+          Object.keys(draggableItems).forEach(draggableId => {
+            if (newState.draggableItems[draggableId]) {
+              newState.draggableItems[draggableId] = {
+                ...newState.draggableItems[draggableId],
+                ...draggableItems[draggableId],
+              };
+            }
+          });
+        }
         return newState;
       })();
     default:

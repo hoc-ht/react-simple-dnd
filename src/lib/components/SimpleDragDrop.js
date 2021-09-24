@@ -9,10 +9,10 @@ import {
   onRevalidatedAC,
   registerDroppableItemAC,
   unregisterDroppableItemAC,
-  updateDroppablePositionAC,
+  updateElementPositionAC,
 } from '../reducer/actions';
 import {throttle} from '../utils';
-import {getDragStartData, getDroppablePosition, handleDragEnd} from '../reducer/utils';
+import {getDragStartData, getElementPosition, handleDragEnd} from '../reducer/utils';
 import {getBox} from 'css-box-model';
 
 const useSimpleDragDrop = ({getDraggingItemSize, onDragEnd, onDragStart, getDragMetadata}) => {
@@ -168,11 +168,17 @@ const useSimpleDragDrop = ({getDraggingItemSize, onDragEnd, onDragStart, getDrag
     }));
   }, []);
 
-  const updatePosition = React.useCallback(function () {
-    const droppableItems = getDroppablePosition(droppableRefs);
-    dispatch(updateDroppablePositionAC({
-      droppableItems,
-    }));
+  const updatePosition = React.useCallback(function (updateDroppable = true, updateDraggable = false) {
+    const data = {};
+    if (updateDroppable) {
+      data.droppableItems = getElementPosition(droppableRefs.current);
+    }
+    if (updateDraggable) {
+      data.draggableItems = getElementPosition(draggableRefs.current);
+    }
+    if (Object.keys(data).length) {
+      dispatch(updateElementPositionAC(data));
+    }
   }, []);
 
   return {
