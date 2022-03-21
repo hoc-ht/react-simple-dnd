@@ -39,12 +39,13 @@ const useSimpleDragDrop = ({getDraggingItemSize, onDragEnd, onDragStart, getDrag
     }));
   }, []);
 
-  const registerDraggableItem = React.useCallback(function (droppableId, draggableId, index, innerRef) {
+  const registerDraggableItem = React.useCallback(function (droppableId, draggableId, index, innerRef, registerId) {
     draggableRefs.current[draggableId] = {
       droppableId,
       draggableId,
       index,
       innerRef,
+      registerId,
     };
   }, []);
 
@@ -55,8 +56,10 @@ const useSimpleDragDrop = ({getDraggingItemSize, onDragEnd, onDragStart, getDrag
     }));
   }, []);
 
-  const unregisterDraggableItem = React.useCallback(function (draggableId) {
-    delete draggableRefs.current[draggableId];
+  const unregisterDraggableItem = React.useCallback(function (draggableId, registerId) {
+    if (draggableRefs.current[draggableId] && draggableRefs.current[draggableId].registerId === registerId) {
+      delete draggableRefs.current[draggableId];
+    }
   }, []);
 
   const handleDragStart = React.useCallback((draggableId, event) => {

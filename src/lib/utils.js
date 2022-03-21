@@ -34,3 +34,12 @@ export function throttle(func, wait, options) {
     return result;
   };
 }
+
+export function uniqueID(prefix = 'id-') {
+  return (
+    prefix +
+    Math.random()
+    .toString(36)
+    .substr(2, 16)
+  );
+}

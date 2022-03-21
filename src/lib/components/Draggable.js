@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {useDroppableContext, useSimpleDragDropContext} from '../context';
+import {uniqueID} from '../utils';
 
 const Draggable = React.memo(function Draggable({children, draggableId, index}) {
   const {
@@ -16,9 +17,10 @@ const Draggable = React.memo(function Draggable({children, draggableId, index}) 
   const innerRef = React.useRef();
 
   React.useEffect(() => {
-    registerDraggableItem(droppableId, draggableId, index, innerRef);
+    const registerId = uniqueID();
+    registerDraggableItem(droppableId, draggableId, index, innerRef, registerId);
     return function () {
-      unregisterDraggableItem(draggableId);
+      unregisterDraggableItem(draggableId, registerId);
     };
   }, [registerDraggableItem, unregisterDraggableItem, draggableId, droppableId, index]);
 
